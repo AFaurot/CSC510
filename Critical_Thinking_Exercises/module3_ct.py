@@ -83,8 +83,8 @@ def main():
     print("This program implements a simple ANN to predict the next number in an arithmetic sequence.")
     print("Training data consists of sequences of 3 numbers, and the target is the next number in the sequence.\n")
     print("Training data is an array structured as follows :\n", X)
-    print("\nHow many hidden training layers do you want? (default: 10)")
-    hidden_size = input("Enter number of hidden layers (or press Enter for default): ")
+    print("")
+    hidden_size = input("Enter the number of neurons in the hidden layer (or press Enter for default): ")
     if hidden_size.strip() == "":
         hidden_size = 10
     else:
