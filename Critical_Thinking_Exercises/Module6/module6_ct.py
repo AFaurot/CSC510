@@ -40,7 +40,7 @@ def main():
     # Fit the model to the training data,
     model.fit(X, y)
 
-    # Testing loop for user input
+    # Testing loop for user input phrases
     while True:
         test_phrase = input("Enter a test phrase to classify as spam or not spam: ")
         test_vector = vectorizer.transform([test_phrase])
