@@ -35,9 +35,9 @@ def main():
 
     # Convert messages to a frequency table using CountVectorizer
     X = vectorizer.fit_transform(df['message'])
-    # Alpha is set to 1.0 for Laplace smoothing
+    # Alpha is set to 1.0 for Laplace smoothing correcting for zero probabilities
     model = MultinomialNB(alpha=1.0)
-    # Fit the model to the training data,
+    # Fit the model to the training data, multinomialNB creates the likelihood table here
     model.fit(X, y)
 
     # Testing loop for user input phrases
