@@ -145,7 +145,7 @@ def launch_gui(growth_rates, full_df, model):
             output.insert(tk.END, "No matching stocking data found.\n")
             return
         # Prepare the input features for the model
-        features = ['quantity', 'size_inches', 'growth_score', 'years_since_stocking', 'size_class']
+        features = ['log_quantity', 'size_inches', 'growth_score', 'years_since_stocking', 'size_class']
         input_X = pd.get_dummies(filtered_df[features], columns=['size_class'])
 
         # Ensure all model features are present in the input data fill in missing features with 0
@@ -168,6 +168,7 @@ def launch_gui(growth_rates, full_df, model):
             output.insert(tk.END, f"{row['water_name']} ({county_display}), Year: {row['year']} -> {row['predicted_class']}\n")
     # Create the main GUI window
     root = tk.Tk()
+    root.minsize(600, 400)
     root.title("Fish Catchability Predictor")
 
     tk.Label(root, text="Select Species:").grid(row=0, column=0)
@@ -183,8 +184,11 @@ def launch_gui(growth_rates, full_df, model):
     submit_btn = tk.Button(root, text="Find Best Locations", command=lambda: on_submit(species_cb.get(), county_cb.get()))
     submit_btn.grid(row=2, column=0, columnspan=2)
 
-    output = tk.Text(root, height=15, width=60)
+    output = tk.Text(root, height=20, width=80)
     output.grid(row=3, column=0, columnspan=2)
+    root.columnconfigure(1, weight=1)
+    root.rowconfigure(3, weight=1)
+    output.grid(sticky="nsew")
 
     root.mainloop()
 
@@ -290,7 +294,8 @@ def main():
     numeric_columns = ['quantity', 'size_inches', 'years_since_stocking', 'growth_score']
     for col in numeric_columns:
         stocking_df[col] = pd.to_numeric(stocking_df[col], errors='coerce')
-
+    # Use log distribution to normalize quantity values
+    stocking_df['log_quantity'] = np.log1p(stocking_df['quantity'].fillna(0))
     # For each row, apply estimate_catchability function to calculate catchability score
     stocking_df['catchability_score'] = stocking_df.apply(
         lambda row: estimate_catchability(row['growth_score'], row['size_class'], row['years_since_stocking']), axis=1
@@ -301,7 +306,8 @@ def main():
     # Now we have a DataFrame with all necessary columns for training the model!!
     # Next, we will train a Random Forest Classifier to predict catchability class based on the features
     print("Training the model...")
-    features = ['quantity', 'size_inches', 'growth_score', 'years_since_stocking', 'size_class']
+    features = ['log_quantity', 'size_inches', 'growth_score', 'years_since_stocking', 'size_class']
+    # Convert size_class to one-hot encoded columns
     X = pd.get_dummies(stocking_df[features], columns=['size_class'])
     y = stocking_df['catchability_class']
 

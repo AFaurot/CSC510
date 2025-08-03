@@ -177,11 +177,13 @@ def main():
     }
 
     stocking_df['growth_score'] = stocking_df['species_code'].map(lambda x: growth_rates.get(x, [None, None])[1])
-    numeric_columns = ['quantity', 'size_inches', 'years_since_stocking', 'growth_score']
+    numeric_columns = ['log_quantity','quantity', 'size_inches', 'years_since_stocking', 'growth_score']
     # Convert numeric columns to float, coercing errors to NaN
     for col in numeric_columns:
         if col in stocking_df.columns:
             stocking_df[col] = pd.to_numeric(stocking_df[col], errors='coerce')
+    # Ensure growth_score is numeric and apply catchability estimation
+    stocking_df['log_quantity'] = np.log1p(stocking_df['quantity'].fillna(0))
     stocking_df['growth_score'] = pd.to_numeric(stocking_df['growth_score'], errors='coerce')
     stocking_df['catchability_score'] = stocking_df.apply(
         lambda row: estimate_catchability(
@@ -222,7 +224,14 @@ def main():
     print(invalid_species_code_rows)
     # Uncomment the line below to save the rows with invalid species_code to a CSV file
     # invalid_species_code_rows.to_csv('invalid_species_code_rows.csv', index=False)
-
+    print("Variance, standard deviation, and mean of catchability_score:")
+    print("Variance:", stocking_df['catchability_score'].var())
+    print("Standard Deviation:", stocking_df['catchability_score'].std())
+    print("Mean:", stocking_df['catchability_score'].mean())
+    print("variance of all numeric columns:")
+    print(stocking_df[numeric_columns].var())
+    print("variance of log_quantity:")
+    print(stocking_df['log_quantity'].var())
     # Plot histogram of catchability_score
     plt.figure(figsize=(8, 5))
     plt.hist(stocking_df['catchability_score'].dropna(), bins=30, color='skyblue', edgecolor='black')
