@@ -78,11 +78,11 @@ def estimate_catchability(growth_score, size_class, years_since_stocking):
 def classify_catchability(score):
     if score < 2:
         return 'Improbable'
-    elif score < 10:
+    elif score < 9:
         return 'Low'
     elif score < 12:
         return 'Medium'
-    elif score < 15.0:
+    elif score < 15:
         return 'High'
     else:
         return 'Very High'
