@@ -111,14 +111,13 @@ def main():
         'BCR': ['Black Crappie', 6],
         'BGL': ['Bluegill', 6],
         'BHD': ['Bullhead Catfish', 5],
-        'BRK': ['Brook Trout', 8],
+        'BRK': ['Brook Trout', 7],
         'CCF': ['Channel Catfish', 5],
         'CHI': ['Chinook Salmon', 1],
         'CRA': ['Crappie', 6],
         'CUT': ['Cutthroat Trout', 5],
         'CAR': ['CAR Creek Cutthroat', 5],
         'CR1': ['Colorado River Cutthroat "A" strain', 5],
-        'CRC': ['Colorado River Cutthroat', 5],
         'GBN': ['Greenback Cutthroat', 4],
         'PPN': ['Pikes Peak Cutthroat', 4],
         'RGN': ['Rio Grande Cutthroat', 4],
@@ -135,9 +134,9 @@ def main():
         'HBG': ['Hybrid Bluegill', 7],
         'KOK': ['Kokanee Salmon', 6],
         'LMB': ['Largemouth Bass', 5],
-        'BRD': ['Largemouth Bass Brood', 10],
+        'BRD': ['Largemouth Bass Brood', 5],
         'LOC': ['Brown Trout', 5],
-        'LXB': ['Tiger Trout', 9],
+        'LXB': ['Tiger Trout', 8],
         'MAC': ['Mackinaw Trout', 2],
         'MSK': ['Muskellunge', 2],
         'NPK': ['Northern Pike', 5],
@@ -168,14 +167,15 @@ def main():
         'SNF': ['Sunfish - Green', 6],
         'SPB': ['Spotted Bass', 6],
         'SPE': ['Sacramento Perch', 4],
-        'SPL': ['Splake', 4],
-        'SXW': ['Wiper', 9],
+        'SPL': ['Splake', 5],
+        'SXW': ['Wiper', 8],
         'TGM': ['Tiger Muskie', 6],
         'WAL': ['Walleye', 5],
-        'WBA': ['White Bass', 8],
+        'WBA': ['White Bass', 7],
         'WCR': ['White Crappie', 6],
         'YPE': ['Yellow Perch', 5]
     }
+
     stocking_df['growth_score'] = stocking_df['species_code'].map(lambda x: growth_rates.get(x, [None, None])[1])
     numeric_columns = ['quantity', 'size_inches', 'years_since_stocking', 'growth_score']
     # Convert numeric columns to float, coercing errors to NaN
@@ -209,7 +209,8 @@ def main():
     nan_county_code_rows = stocking_df[stocking_df['county_code'].isna()]
     print("Rows with NaN county_code:")
     print(nan_county_code_rows)
-    nan_county_code_rows.to_csv('nan_county_code_rows.csv', index=False)
+    # Uncomment the line below to save the rows with NaN county_code to a CSV file
+    # nan_county_code_rows.to_csv('nan_county_code_rows.csv', index=False)
 
     invalid_species_code_rows = stocking_df[
         ~(
@@ -219,7 +220,8 @@ def main():
     ]
     print("Rows with invalid species_code:")
     print(invalid_species_code_rows)
-    invalid_species_code_rows.to_csv('invalid_species_code_rows.csv', index=False)
+    # Uncomment the line below to save the rows with invalid species_code to a CSV file
+    # invalid_species_code_rows.to_csv('invalid_species_code_rows.csv', index=False)
 
     # Plot histogram of catchability_score
     plt.figure(figsize=(8, 5))
